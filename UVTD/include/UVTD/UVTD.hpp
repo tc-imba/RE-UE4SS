@@ -9,7 +9,7 @@
 #include <DynamicOutput/DynamicOutput.hpp>
 #include <File/File.hpp>
 #include <Input/Handler.hpp>
-#include <UVTD/Symbols.hpp>
+#include <UVTD/TypeMetadata.hpp>
 
 namespace RC::UVTD
 {

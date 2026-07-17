@@ -99,8 +99,24 @@ namespace RC::UVTD
 
             if (!class_entry.functions.empty() && class_entry.valid_for_vtable == ValidForVTable::Yes)
             {
-                virtual_src_dumper.send(STR("#include <FunctionBodies/{}_VTableOffsets_{}_FunctionBody.cpp>\n"),
-                                        base_version, class_entry.class_name_clean);
+                if (output_platform == MemberVarsOutputPlatform::Linux)
+                {
+                    virtual_src_dumper.send(STR("#if PLATFORM_LINUX\n"));
+                    virtual_src_dumper.send(STR("#include <FunctionBodies/Platform/Linux/{}_VTableOffsets_{}_FunctionBody.cpp>\n"),
+                                            base_version,
+                                            class_entry.class_name_clean);
+                    virtual_src_dumper.send(STR("#else\n"));
+                    virtual_src_dumper.send(STR("#include <FunctionBodies/{}_VTableOffsets_{}_FunctionBody.cpp>\n"),
+                                            base_version,
+                                            class_entry.class_name_clean);
+                    virtual_src_dumper.send(STR("#endif\n"));
+                }
+                else
+                {
+                    virtual_src_dumper.send(STR("#include <FunctionBodies/{}_VTableOffsets_{}_FunctionBody.cpp>\n"),
+                                            base_version,
+                                            class_entry.class_name_clean);
+                }
             }
         }
 
@@ -108,6 +124,32 @@ namespace RC::UVTD
 
         // Collect known suffixes from config to generate #ifdef blocks
         const auto& suffix_defs = ConfigUtil::GetSuffixDefinitions();
+
+        const auto generate_member_layout_include =
+            [&virtual_src_dumper, this](const File::StringType& filename_prefix,
+                                        const File::StringType& class_name) {
+                if (output_platform == MemberVarsOutputPlatform::Linux)
+                {
+                    virtual_src_dumper.send(STR("#if PLATFORM_LINUX\n"));
+                    virtual_src_dumper.send(
+                        STR("#include <FunctionBodies/Platform/Linux/{}_MemberVariableLayout_DefaultSetter_{}.cpp>\n"),
+                        filename_prefix,
+                        class_name);
+                    virtual_src_dumper.send(STR("#else\n"));
+                    virtual_src_dumper.send(
+                        STR("#include <FunctionBodies/{}_MemberVariableLayout_DefaultSetter_{}.cpp>\n"),
+                        filename_prefix,
+                        class_name);
+                    virtual_src_dumper.send(STR("#endif\n"));
+                }
+                else
+                {
+                    virtual_src_dumper.send(
+                        STR("#include <FunctionBodies/{}_MemberVariableLayout_DefaultSetter_{}.cpp>\n"),
+                        filename_prefix,
+                        class_name);
+                }
+            };
 
         // Track suffixes for which we actually generate blocks (only those that have variant PDBs)
         std::vector<std::pair<File::StringType, SuffixDefinition>> active_suffix_defs;
@@ -146,10 +188,9 @@ namespace RC::UVTD
 
                 if (!class_entry.variables.empty())
                 {
-                    virtual_src_dumper.send(STR("#include <FunctionBodies/{}_{}_MemberVariableLayout_DefaultSetter_{}.cpp>\n"),
-                                            base_version,
-                                            suffix_name,
-                                            class_name_clean_final);
+                    generate_member_layout_include(
+                        base_version + STR("_") + suffix_name,
+                        class_name_clean_final);
                 }
             }
 
@@ -181,9 +222,7 @@ namespace RC::UVTD
 
             if (!class_entry.variables.empty())
             {
-                virtual_src_dumper.send(STR("#include <FunctionBodies/{}_MemberVariableLayout_DefaultSetter_{}.cpp>\n"),
-                                        base_version,
-                                        class_name_clean_final);
+                generate_member_layout_include(base_version, class_name_clean_final);
             }
         }
 

@@ -2,16 +2,21 @@
 #include <UVTD/ConfigUtil.hpp>
 #include <UVTD/Helpers.hpp>
 #include <UVTD/SolBindingsGenerator.hpp>
+
+#ifdef _WIN32
 #include <UVTD/MemberVarsDumper.hpp>
+#endif
 
 namespace RC::UVTD
 {
+#ifdef _WIN32
     auto SolBindingsGenerator::generate_code() -> void
     {
-        MemberVarsDumper member_vars_dumper{symbols};
+        MemberVarsDumper member_vars_dumper{symbols.value()};
         member_vars_dumper.generate_code();
         type_container = member_vars_dumper.get_type_container();
     }
+#endif
 
     auto SolBindingsGenerator::generate_files() -> void
     {

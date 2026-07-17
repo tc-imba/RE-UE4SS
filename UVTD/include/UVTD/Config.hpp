@@ -7,7 +7,7 @@
 #include <vector>
 
 #include <File/File.hpp>
-#include <UVTD/Symbols.hpp>
+#include <UVTD/TypeMetadata.hpp>
 
 namespace RC::UVTD
 {

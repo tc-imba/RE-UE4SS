@@ -10,7 +10,7 @@ namespace RC::UVTD
     {
 #if RC_IS_ANSI == 1
         return File::StringType(c_str);
-#else
+#elif defined(_WIN32)
         size_t count = strlen(c_str) + 1;
         wchar_t* converted_method_name = new wchar_t[count];
 
@@ -22,6 +22,8 @@ namespace RC::UVTD
         delete[] converted_method_name;
 
         return converted;
+#else
+        return to_wstring(c_str);
 #endif
     }
 

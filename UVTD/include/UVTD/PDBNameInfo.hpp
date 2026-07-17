@@ -8,11 +8,6 @@
 #include <File/File.hpp>
 #include <Helpers/String.hpp>
 
-#ifdef TEXT
-#undef TEXT
-#endif
-#define STR(str) L##str
-
 namespace RC::UVTD
 {
     // PDB naming format: Major_Minor[_Suffix1][_Suffix2]
@@ -148,7 +143,7 @@ namespace RC::UVTD
                 }
                 else if (c >= 'a' && c <= 'z')
                 {
-                    result += static_cast<wchar_t>(c - 'a' + 'A');
+                    result += static_cast<CharType>(c - 'a' + 'A');
                     need_underscore = true;
                 }
                 else if (c >= '0' && c <= '9')

@@ -4,8 +4,52 @@ set(TARGET UnrealVTableDumper)
 project(${TARGET})
 message("Project: UnrealVTableDumper")
 
-# Use glob to find all source files
-file(GLOB_RECURSE ${TARGET}_Sources "${CMAKE_CURRENT_SOURCE_DIR}/src/**.cpp")
+# Keep the existing Windows implementation intact and share only the generators
+# that consume TypeContainer.
+set(${TARGET}_Sources
+    src/CommandLine.cpp
+    src/Config.cpp
+    src/Helpers.cpp
+    src/MemberVarsOutputGenerator.cpp
+    src/MemberVarsWrapperGenerator.cpp
+    src/SolBindingsGenerator.cpp
+    src/TemplateClassParser.cpp
+    src/TypeContainer.cpp
+    src/UnrealVirtualGenerator.cpp
+    src/VTableMethodNames.cpp
+    src/VTableOutputGenerator.cpp
+)
+
+if(WIN32)
+    list(APPEND ${TARGET}_Sources
+        src/MemberVarsDumper.cpp
+        src/Symbols.cpp
+        src/UVTD.cpp
+        src/VTableDumper.cpp
+        src/main.cpp
+    )
+elseif(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND ${TARGET}_Sources
+        src/DwarfMemberVarsLoader.cpp
+        src/LinuxInteractive.cpp
+        src/main_linux.cpp
+    )
+    find_package(LLVM CONFIG REQUIRED)
+    if(TARGET LLVM AND LLVM_LINK_LLVM_DYLIB)
+        set(UVTD_LLVM_LIBS LLVM)
+    else()
+        llvm_map_components_to_libnames(UVTD_LLVM_LIBS
+            Object
+            BinaryFormat
+            DebugInfoDWARF
+            Demangle
+            Support
+        )
+    endif()
+else()
+    message(FATAL_ERROR "UVTD does not support ${CMAKE_SYSTEM_NAME}")
+endif()
+
 file(GLOB_RECURSE ${TARGET}_Headers "${CMAKE_CURRENT_SOURCE_DIR}/include/**.hpp")
 
 add_executable(${TARGET} ${${TARGET}_Sources} ${${TARGET}_Headers})
@@ -39,10 +83,16 @@ target_compile_definitions(${TARGET} PRIVATE
 )
 # First party static build -> END
 
-target_link_libraries(${TARGET} PRIVATE
-    File Input DynamicOutput Helpers)
+target_link_libraries(${TARGET} PRIVATE File DynamicOutput Helpers)
 
-target_link_libraries(${TARGET} PRIVATE glaze::glaze raw_pdb)
+target_link_libraries(${TARGET} PRIVATE glaze::glaze)
+
+if(WIN32)
+    target_link_libraries(${TARGET} PRIVATE Input raw_pdb)
+else()
+    target_include_directories(${TARGET} SYSTEM PRIVATE ${LLVM_INCLUDE_DIRS})
+    target_link_libraries(${TARGET} PRIVATE ${UVTD_LLVM_LIBS})
+endif()
 
 # Set IDE folder - make sure to use capital P for Programs
 set_target_properties(${TARGET} PROPERTIES FOLDER "Programs")

@@ -3,8 +3,8 @@
 #include <unordered_map>
 
 #include <File/File.hpp>
-#include <UVTD/Symbols.hpp>
 #include <UVTD/PDBNameInfo.hpp>
+#include <UVTD/TypeMetadata.hpp>
 
 namespace RC::UVTD
 {

@@ -3,6 +3,7 @@
 
 #include <DynamicOutput/DynamicOutput.hpp>
 #include <Helpers/String.hpp>
+#include <UVTD/CommandLine.hpp>
 #include <UVTD/Config.hpp>
 #include <UVTD/UVTD.hpp>
 
@@ -126,10 +127,15 @@ auto dll_process_attached(HMODULE moduleHandle) -> void
     }
 }
 
-auto main() -> int
+auto main(int argc, char** argv) -> int
 {
-    thread_dll_start(nullptr);
-    return 0;
+    if (argc == 1)
+    {
+        thread_dll_start(nullptr);
+        return 0;
+    }
+
+    return UVTD::run_command_line_main(argc, argv);
 }
 
 auto DllMain(HMODULE hModule, DWORD ul_reason_for_call, [[maybe_unused]] LPVOID lpReserved) -> BOOL

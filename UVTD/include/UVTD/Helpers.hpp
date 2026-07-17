@@ -7,11 +7,6 @@
 #include <filesystem>
 
 #include <File/File.hpp>
-#include <UVTD/Symbols.hpp>
-
-#define NOMINMAX
-#include <Windows.h>
-#undef NOMINMAX
 
 namespace RC::UVTD
 {
