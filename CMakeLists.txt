@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.22)
 
 project(UE4SSMonorepo)
 
+option(UE4SS_BUILD_TESTS "Build UE4SS tests" OFF)
+
+if(UE4SS_BUILD_TESTS)
+    enable_testing()
+endif()
+
 # Basic setup
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

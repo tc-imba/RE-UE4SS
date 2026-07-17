@@ -96,3 +96,315 @@ endif()
 
 # Set IDE folder - make sure to use capital P for Programs
 set_target_properties(${TARGET} PROPERTIES FOLDER "Programs")
+
+if (UE4SS_BUILD_TESTS)
+    set(TEST_TARGET UVTDVTableOutputTests)
+    add_executable(${TEST_TARGET}
+        tests/VTableOutputGeneratorTests.cpp
+        src/Config.cpp
+        src/Helpers.cpp
+        src/TypeContainer.cpp
+        src/VTableOutputGenerator.cpp
+    )
+    target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        RC_FILE_BUILD_STATIC
+        RC_DYNAMIC_OUTPUT_BUILD_STATIC
+        RC_USE_WCHAR
+    )
+    target_include_directories(${TEST_TARGET} PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    target_link_libraries(${TEST_TARGET} PRIVATE
+        File
+        DynamicOutput
+        Helpers
+        fmt
+        glaze::glaze
+    )
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+    set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+
+    set(TEST_TARGET UVTDVTableMethodNamesTests)
+    add_executable(${TEST_TARGET}
+        tests/VTableMethodNamesTests.cpp
+        src/VTableMethodNames.cpp
+    )
+    target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        RC_FILE_BUILD_STATIC
+        RC_USE_WCHAR
+    )
+    target_include_directories(${TEST_TARGET} PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    target_link_libraries(${TEST_TARGET} PRIVATE File)
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+    set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+
+    set(TEST_TARGET UVTDTypeMetadataCompileTests)
+    add_executable(${TEST_TARGET}
+        tests/TypeMetadataCompileTests.cpp
+    )
+    target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        RC_FILE_BUILD_STATIC
+        RC_USE_WCHAR
+    )
+    target_include_directories(${TEST_TARGET} PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/deps/first/File/include>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/deps/first/String/include>
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/deps/first/Helpers/include>
+    )
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+    set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+
+    set(TEST_TARGET UVTDLinuxFileSmokeTests)
+    add_executable(${TEST_TARGET}
+        tests/LinuxFileSmokeTests.cpp
+    )
+    target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        RC_FILE_BUILD_STATIC
+        RC_USE_WCHAR
+    )
+    target_link_libraries(${TEST_TARGET} PRIVATE File)
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+    set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+
+    set(TEST_TARGET UVTDMemberVarsOutputTests)
+    add_executable(${TEST_TARGET}
+        tests/MemberVarsOutputGeneratorTests.cpp
+        src/Config.cpp
+        src/Helpers.cpp
+        src/MemberVarsOutputGenerator.cpp
+        src/TypeContainer.cpp
+        src/UnrealVirtualGenerator.cpp
+    )
+    target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        RC_FILE_BUILD_STATIC
+        RC_DYNAMIC_OUTPUT_BUILD_STATIC
+        RC_USE_WCHAR
+    )
+    target_include_directories(${TEST_TARGET} PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    target_link_libraries(${TEST_TARGET} PRIVATE
+        File
+        DynamicOutput
+        Helpers
+        fmt
+        glaze::glaze
+    )
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+    set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+
+    set(TEST_TARGET UVTDConfigWithoutPlatformLayoutsTests)
+    add_executable(${TEST_TARGET}
+        tests/ConfigWithoutPlatformLayoutsTests.cpp
+        src/Config.cpp
+    )
+    target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        RC_FILE_BUILD_STATIC
+        RC_DYNAMIC_OUTPUT_BUILD_STATIC
+        RC_USE_WCHAR
+    )
+    target_include_directories(${TEST_TARGET} PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    target_link_libraries(${TEST_TARGET} PRIVATE
+        File
+        DynamicOutput
+        Helpers
+        fmt
+        glaze::glaze
+    )
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+    set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+
+    set(TEST_TARGET UVTDSolBindingsTypeContainerTests)
+    add_executable(${TEST_TARGET}
+        tests/SolBindingsTypeContainerTests.cpp
+        src/Config.cpp
+        src/SolBindingsGenerator.cpp
+    )
+    target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+    target_compile_definitions(${TEST_TARGET} PRIVATE
+        RC_FILE_BUILD_STATIC
+        RC_DYNAMIC_OUTPUT_BUILD_STATIC
+        RC_USE_WCHAR
+    )
+    target_include_directories(${TEST_TARGET} PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    )
+    target_link_libraries(${TEST_TARGET} PRIVATE
+        File
+        DynamicOutput
+        Helpers
+        fmt
+        glaze::glaze
+    )
+    add_test(NAME ${TEST_TARGET} COMMAND ${TEST_TARGET})
+    set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+
+    if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+        set(TEST_TARGET UVTDLinuxInteractiveTests)
+        add_executable(${TEST_TARGET}
+            tests/LinuxInteractiveTests.cpp
+            src/CommandLine.cpp
+            src/Config.cpp
+            src/DwarfMemberVarsLoader.cpp
+            src/Helpers.cpp
+            src/LinuxInteractive.cpp
+            src/MemberVarsOutputGenerator.cpp
+            src/MemberVarsWrapperGenerator.cpp
+            src/SolBindingsGenerator.cpp
+            src/TypeContainer.cpp
+            src/UnrealVirtualGenerator.cpp
+            src/VTableMethodNames.cpp
+            src/VTableOutputGenerator.cpp
+        )
+        target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+        target_compile_definitions(${TEST_TARGET} PRIVATE
+            RC_FILE_BUILD_STATIC
+            RC_DYNAMIC_OUTPUT_BUILD_STATIC
+            RC_USE_WCHAR
+        )
+        target_include_directories(${TEST_TARGET} PRIVATE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            ${LLVM_INCLUDE_DIRS}
+        )
+        target_link_libraries(${TEST_TARGET} PRIVATE
+            File
+            DynamicOutput
+            Helpers
+            fmt
+            glaze::glaze
+            ${UVTD_LLVM_LIBS}
+        )
+        add_test(
+            NAME ${TEST_TARGET}
+            COMMAND ${TEST_TARGET} $<TARGET_FILE:UVTDDwarfLayoutFixture>
+        )
+        set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+
+        add_executable(UVTDDwarfLayoutFixture
+            tests/fixtures/DwarfLayoutFixture.cpp
+            tests/fixtures/DwarfAmbiguousA.cpp
+            tests/fixtures/DwarfAmbiguousB.cpp
+        )
+        target_compile_features(UVTDDwarfLayoutFixture PRIVATE cxx_std_23)
+        target_compile_options(UVTDDwarfLayoutFixture PRIVATE
+            -O0
+            -g
+            -gdwarf-5
+            -fstandalone-debug
+        )
+        add_dependencies(UVTDLinuxInteractiveTests UVTDDwarfLayoutFixture)
+
+        set(DWARF_SPECIAL_CASES_FIXTURE
+            ${CMAKE_CURRENT_BINARY_DIR}/DwarfSpecialCasesFixture.o)
+        add_custom_command(
+            OUTPUT ${DWARF_SPECIAL_CASES_FIXTURE}
+            COMMAND ${CMAKE_CXX_COMPILER}
+                -c
+                ${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures/DwarfSpecialCasesFixture.s
+                -o
+                ${DWARF_SPECIAL_CASES_FIXTURE}
+            DEPENDS tests/fixtures/DwarfSpecialCasesFixture.s
+            VERBATIM
+        )
+        add_custom_target(
+            UVTDDwarfSpecialCasesFixture
+            DEPENDS ${DWARF_SPECIAL_CASES_FIXTURE}
+        )
+
+        set(TEST_TARGET UVTDDwarfMemberVarsLoaderTests)
+        add_executable(${TEST_TARGET}
+            tests/DwarfMemberVarsLoaderTests.cpp
+            src/Config.cpp
+            src/DwarfMemberVarsLoader.cpp
+            src/Helpers.cpp
+            src/TypeContainer.cpp
+            src/VTableMethodNames.cpp
+        )
+        target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+        target_compile_definitions(${TEST_TARGET} PRIVATE
+            RC_FILE_BUILD_STATIC
+            RC_DYNAMIC_OUTPUT_BUILD_STATIC
+            RC_USE_WCHAR
+        )
+        target_include_directories(${TEST_TARGET} PRIVATE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            ${LLVM_INCLUDE_DIRS}
+        )
+        target_link_libraries(${TEST_TARGET} PRIVATE
+            File
+            DynamicOutput
+            Helpers
+            fmt
+            glaze::glaze
+            ${UVTD_LLVM_LIBS}
+        )
+        add_dependencies(
+            ${TEST_TARGET}
+            UVTDDwarfLayoutFixture
+            UVTDDwarfSpecialCasesFixture
+        )
+        add_test(
+            NAME ${TEST_TARGET}
+            COMMAND ${TEST_TARGET}
+                $<TARGET_FILE:UVTDDwarfLayoutFixture>
+                ${DWARF_SPECIAL_CASES_FIXTURE}
+        )
+        set_target_properties(
+            ${TEST_TARGET}
+            UVTDDwarfLayoutFixture
+            PROPERTIES FOLDER "Tests"
+        )
+
+        set(TEST_TARGET UVTDCommandLineTests)
+        add_executable(${TEST_TARGET}
+            tests/CommandLineTests.cpp
+            src/CommandLine.cpp
+            src/Config.cpp
+            src/DwarfMemberVarsLoader.cpp
+            src/Helpers.cpp
+            src/MemberVarsOutputGenerator.cpp
+            src/MemberVarsWrapperGenerator.cpp
+            src/SolBindingsGenerator.cpp
+            src/TypeContainer.cpp
+            src/UnrealVirtualGenerator.cpp
+            src/VTableMethodNames.cpp
+            src/VTableOutputGenerator.cpp
+        )
+        target_compile_features(${TEST_TARGET} PRIVATE cxx_std_23)
+        target_compile_definitions(${TEST_TARGET} PRIVATE
+            RC_FILE_BUILD_STATIC
+            RC_DYNAMIC_OUTPUT_BUILD_STATIC
+            RC_USE_WCHAR
+        )
+        target_include_directories(${TEST_TARGET} PRIVATE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            ${LLVM_INCLUDE_DIRS}
+        )
+        target_link_libraries(${TEST_TARGET} PRIVATE
+            File
+            DynamicOutput
+            Helpers
+            fmt
+            glaze::glaze
+            ${UVTD_LLVM_LIBS}
+        )
+        add_dependencies(${TEST_TARGET} UVTDDwarfLayoutFixture)
+        add_test(
+            NAME ${TEST_TARGET}
+            COMMAND ${TEST_TARGET} $<TARGET_FILE:UVTDDwarfLayoutFixture>
+        )
+        set_target_properties(${TEST_TARGET} PROPERTIES FOLDER "Tests")
+    endif()
+
+endif ()
