@@ -69,6 +69,7 @@ FetchContent_Declare(
 add_subdirectory("PolyHook_2_0")
 
 # raw_pdb
+if(WIN32)
 FetchContent_Declare(
     raw_pdb
     GIT_REPOSITORY https://github.com/MolecularMatters/raw_pdb.git
@@ -76,6 +77,7 @@ FetchContent_Declare(
     GIT_PROGRESS ON
 )
 add_subdirectory("raw_pdb")
+endif()
 
 # Corrosion (Rust integration)
 FetchContent_Declare(

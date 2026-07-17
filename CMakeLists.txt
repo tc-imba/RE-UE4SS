@@ -7,7 +7,10 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-enable_language(CXX ASM_MASM)
+enable_language(CXX)
+if(WIN32)
+    enable_language(ASM_MASM)
+endif()
 include(CheckIPOSupported)
 include(GNUInstallDirs)
 

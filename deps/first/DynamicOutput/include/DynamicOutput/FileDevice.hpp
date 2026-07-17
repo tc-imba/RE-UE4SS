@@ -86,7 +86,7 @@ namespace RC::Output
     }
     // OutputDevice Interface -> END
 
-    auto set_file_name_and_path(const File::StringType& file_name_and_path) -> void
+    auto set_file_name_and_path(const std::filesystem::path& file_name_and_path) -> void
     {
         m_file_name_and_path = file_name_and_path;
     }

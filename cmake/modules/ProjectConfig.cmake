@@ -11,7 +11,12 @@ include(Utilities)  # For string manipulation functions
 set(UE4SS_PROJECTS "UE4SS" "UVTD" CACHE STRING "List of main project targets")
 set(UE4SS_TARGET_TYPES "Game" "CasePreserving" "LessEqual421" CACHE STRING "UE4-style target types")
 set(UE4SS_CONFIGURATION_TYPES "Debug" "Dev" "Shipping" "Test" CACHE STRING "UE4-style configuration types")
-set(UE4SS_PLATFORM_TYPES "Win64" CACHE STRING "Supported platform types")
+if(WIN32)
+    set(UE4SS_DEFAULT_PLATFORM_TYPES "Win64")
+else()
+    set(UE4SS_DEFAULT_PLATFORM_TYPES "Linux")
+endif()
+set(UE4SS_PLATFORM_TYPES "${UE4SS_DEFAULT_PLATFORM_TYPES}" CACHE STRING "Supported platform types")
 
 # Feature toggles
 option(MAKE_DEPENDENCIES_SHARED "Make dependencies shared" OFF)
@@ -55,6 +60,7 @@ set(UE4SS_Test_DEFINITIONS UE_BUILD_TEST STATS UE4SS_PROFILERS)
 # Platform definitions (UE4-style)
 set(UE4SS_Win64_DEFINITIONS PLATFORM_WINDOWS PLATFORM_MICROSOFT OVERRIDE_PLATFORM_HEADER_NAME=Windows UBT_COMPILED_PLATFORM=Win64)
 set(UE4SS_Win64_VARS CMAKE_SYSTEM_PROCESSOR=x86_64)
+set(UE4SS_Linux_DEFINITIONS PLATFORM_LINUX UBT_COMPILED_PLATFORM=Linux RC_USE_WCHAR)
 
 # Initializes the project configuration
 #
